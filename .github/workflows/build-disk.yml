@@ -61,7 +61,6 @@ jobs:
           sudo mv "${SOURCE_DIR}"/*/*.iso "${SOURCE_DIR}/zirc-unbranded.iso"
           sudo podman rmi -a -f
           podman rmi -a -f
-          git clone https://github.com/zirconium-dev/assets.git
           sudo podman run \
             --rm \
             -it \
@@ -69,7 +68,7 @@ jobs:
             --privileged \
             -v /dev:/dev \
             -v "${SOURCE_DIR}:/output" \
-            -v ./assets/iso:/iso \
+            -v ./iso:/iso \
             registry.fedoraproject.org/fedora:latest \
             bash -c 'dnf install -y lorax \
             && mkdir /images \
