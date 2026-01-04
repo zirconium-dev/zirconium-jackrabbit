@@ -50,6 +50,7 @@ dnf -y install \
     chezmoi \
     ddcutil \
     fastfetch \
+    fcitx5-mozc \
     flatpak \
     foot \
     fpaste \
