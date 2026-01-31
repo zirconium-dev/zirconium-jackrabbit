@@ -2,10 +2,7 @@
 
 set -xeuo pipefail
 
-# See https://github.com/CentOS/centos-bootc/issues/191
-mkdir -p /var/roothome
-
-HOME_URL="https://github.com/zirconium-dev/zirconium"
+HOME_URL="https://github.com/zirconium-dev/zirconium-jackrabbit"
 echo "zirconium" | tee "/etc/hostname"
 # OS Release File (changed in order with upstream)
 # TODO: change ANSI_COLOR
@@ -13,7 +10,7 @@ sed -i -f - /usr/lib/os-release <<EOF
 s|^NAME=.*|NAME=\"Zirconium\"|
 s|^PRETTY_NAME=.*|PRETTY_NAME=\"Zirconium\"|
 s|^VERSION_CODENAME=.*|VERSION_CODENAME=\"Juno\"|
-s|^VARIANT_ID=.*|VARIANT_ID=""|
+s|^VARIANT_ID=.*|VARIANT_ID="Jackrabbit"|
 s|^HOME_URL=.*|HOME_URL=\"${HOME_URL}\"|
 s|^BUG_REPORT_URL=.*|BUG_REPORT_URL=\"${HOME_URL}/issues\"|
 s|^SUPPORT_URL=.*|SUPPORT_URL=\"${HOME_URL}/issues\"|
@@ -27,37 +24,7 @@ s|^DEFAULT_HOSTNAME=.*|DEFAULT_HOSTNAME="zirconium"|
 /^REDHAT_SUPPORT_PRODUCT_VERSION=/d
 EOF
 
-# Add Flathub to the image for eventual application
-mkdir -p /etc/flatpak/remotes.d/
-curl --retry 3 -Lo /etc/flatpak/remotes.d/flathub.flatpakrepo https://dl.flathub.org/repo/flathub.flatpakrepo
-
-# GO AWAY fedora flatpaks.
-rm -rf /usr/lib/systemd/system/flatpak-add-fedora-repos.service
-systemctl enable flatpak-add-flathub-repos.service
-
-# Saves a ton of space 6767 :steamhappy:
-rm -rf /usr/share/doc
-rm -rf /usr/bin/chsh # footgun
-
-systemctl enable rechunker-group-fix.service
-
-# REQUIRED for dms-greeter to work
-tee /usr/lib/sysusers.d/greeter.conf <<'EOF'
-g greeter 767
-u greeter 767 "Greetd greeter"
-EOF
-
-# These files NEED to be on the image.
-grep -F -e "ghcr.io/zirconium-dev" /etc/containers/policy.json
-stat /etc/pki/containers/zirconium.pub
-stat /etc/pki/containers/zirconium.pub
-stat /usr/bin/luks*tpm*
-stat /usr/bin/uupd
-stat /usr/lib/systemd/system/uupd.service
-stat /usr/lib/systemd/system/uupd.timer
-
 KERNEL_VERSION="$(find "/usr/lib/modules" -maxdepth 1 -type d ! -path "/usr/lib/modules" -exec basename '{}' ';' | sort | tail -n 1)"
 export DRACUT_NO_XATTR=1
 dracut --no-hostonly --kver "$KERNEL_VERSION" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$KERNEL_VERSION/initramfs.img"
 chmod 0600 "/usr/lib/modules/${KERNEL_VERSION}/initramfs.img"
-
