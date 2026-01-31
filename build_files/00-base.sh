@@ -28,5 +28,5 @@ dnf install -y \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 dnf install -y \
-	steam
+	steam \
 	gamescope-session-plus
