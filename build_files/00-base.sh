@@ -15,7 +15,7 @@ popd
 dnf -y copr enable bieszczaders/kernel-cachyos
 dnf -y copr disable bieszczaders/kernel-cachyos
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos install \
-  kernel-cachyos-lto
+  kernel-cachyos
 
 dnf -y copr enable bieszczaders/kernel-cachyos-addons
 dnf -y copr disable bieszczaders/kernel-cachyos-addons
