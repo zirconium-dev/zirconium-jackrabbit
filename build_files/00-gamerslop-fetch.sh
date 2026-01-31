@@ -45,13 +45,10 @@ dnf -y --enablerepo=terra install \
   gamescope-session-plus \
   ScopeBuddy
 
-dnf install -y \
-  "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
-  "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
-dnf config-manager setopt rpmfusion-free.enabled=0
-dnf config-manager setopt rpmfusion-nonfree.enabled=0
+dnf -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedora-steam.repo
+dnf config-manager setopt fedora-steam.enabled=0
 
-dnf install -y --enablerepo=rpmfusion-free --enablerepo=rpmfusion-nonfree --enablerepo=terra-mesa -x gamemode steam
+dnf install -y --enablerepo=fedora-steam --enablerepo=terra-mesa -x gamemode steam
 
 dnf install -y mangohud lutris vulkan-tools
 
