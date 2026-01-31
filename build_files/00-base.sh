@@ -29,3 +29,4 @@ dnf install -y \
 
 dnf install -y \
 	steam
+	gamescope-session-plus
