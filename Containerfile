@@ -1,4 +1,5 @@
 ARG BUILD_FLAVOR="${BUILD_FLAVOR:-}"
+ARG BASE_IMAGE="${BASE_IMAGE:-}"
 
 FROM scratch AS ctx
 
