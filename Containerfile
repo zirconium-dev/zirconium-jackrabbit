@@ -5,7 +5,7 @@ FROM scratch AS ctx
 
 COPY assets /assets
 COPY build_files /build
-#COPY system_files /files
+COPY system_files /files
 COPY cosign.pub /files/etc/pki/containers/zirconium.pub
 COPY --from=ghcr.io/projectbluefin/common:latest /system_files/shared/usr/bin/luks* /files/usr/bin
 COPY --from=ghcr.io/projectbluefin/common:latest /system_files/shared/usr/share/ublue-os/just /files/usr/share/ublue-os/just
