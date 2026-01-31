@@ -35,3 +35,5 @@ dnf -y --enablerepo terra install \
 
 dnf install -y \
 	steam \
+
+cp -avf "/ctx/files"/. /
