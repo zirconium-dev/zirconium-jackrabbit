@@ -28,9 +28,9 @@ dnf install -y \
   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 dnf -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release
-dnf config-manager setopt terra-release.enabled=0
+dnf config-manager setopt terra.enabled=0
 
-dnf -y --enablerepo terra-release install \
+dnf -y --enablerepo terra install \
 	gamescope-session-plus
 
 dnf install -y \
