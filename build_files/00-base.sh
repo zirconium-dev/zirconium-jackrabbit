@@ -43,3 +43,8 @@ dnf install -y \
     https://github.com/ShadowBlip/OpenGamepadUI/releases/download/v$OGUI_TAG/opengamepadui-$OGUI_TAG-1.x86_64.rpm \
     https://github.com/ShadowBlip/InputPlumber/releases/download/v$IP_TAG/inputplumber-$IP_TAG-1.x86_64.rpm \
     https://github.com/ShadowBlip/PowerStation/releases/download/v$PS_TAG/powerstation-$PS_TAG-1.x86_64.rpm
+
+###Other
+
+sudo dnf install -y \
+	steam
