@@ -3,13 +3,9 @@ ARG BASE_IMAGE="${BASE_IMAGE:-}"
 
 FROM scratch AS ctx
 
-COPY assets /assets
 COPY build_files /build
 COPY system_files /files
-COPY cosign.pub /files/etc/pki/containers/zirconium.pub
-COPY --from=ghcr.io/projectbluefin/common:latest /system_files/shared/usr/bin/luks* /files/usr/bin
-COPY --from=ghcr.io/projectbluefin/common:latest /system_files/shared/usr/share/ublue-os/just /files/usr/share/ublue-os/just
-COPY --from=ghcr.io/ublue-os/brew:latest /system_files /files
+COPY cosign.pub /files/etc/pki/containers/zirconium-jackrabbit.pub
 
 FROM "${BASE_IMAGE}"
 ARG BUILD_FLAVOR="${BUILD_FLAVOR:-}"
@@ -17,12 +13,27 @@ ARG BUILD_FLAVOR="${BUILD_FLAVOR:-}"
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=tmpfs,dst=/var \
     --mount=type=tmpfs,dst=/tmp \
-    /ctx/build/00-base.sh
+    --mount=type=tmpfs,dst=/run \
+    --mount=type=tmpfs,dst=/boot \
+    --network=none \
+    /ctx/build/00-gamerslop-pre.sh
 
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
-    /ctx/build/99-cleanup.sh
+    --mount=type=tmpfs,dst=/var \
+    --mount=type=tmpfs,dst=/tmp \
+    --mount=type=tmpfs,dst=/run \
+    --mount=type=tmpfs,dst=/boot \
+    --mount=type=cache,dst=/var/cache/libdnf5 \
+    /ctx/build/00-gamerslop-fetch.sh
+
+RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
+    --mount=type=tmpfs,dst=/run \
+    --mount=type=tmpfs,dst=/boot \
+    --network=none \
+    /ctx/build/00-gamerslop-post.sh
 
 RUN rm -rf /var/* && mkdir /var/tmp && bootc container lint
+
 # ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠛⠀⠙⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
 # ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠗⠀⠀⣀⣄⠀⢿⣿⣿⣿⠟⠁⢠⡆⠉⠙⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿
 # ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠀⠀⣴⣿⡟⠀⠘⣿⣿⠋⠀⠀⠀⢠⣶⡀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿

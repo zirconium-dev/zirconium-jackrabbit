@@ -1,4 +1,4 @@
-image := env("IMAGE_FULL", "zirconium:latest")
+image := env("IMAGE_FULL", "zirconium-jackrabbit:latest")
 filesystem := env("BUILD_FILESYSTEM", "ext4")
 
 iso $image=image:

@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_DESC: "Opinionated niri + bootc image"
+  IMAGE_DESC: "Opinionated niri + bootc image with Gamerslop"
   IMAGE_KEYWORDS: "bootc,niri"
   IMAGE_LOGO_URL: "https://avatars.githubusercontent.com/u/237492973?s=400&v=4"
   IMAGE_NAME: "${{ github.event.repository.name }}"
@@ -32,7 +32,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: ["", "nvidia"]
+        flavor: [""]
         platform: ["amd64"]
     runs-on: ${{ matrix.platform == 'amd64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
     steps:
@@ -71,8 +71,8 @@ jobs:
         id: build
         env:
           BUILD_FLAVOR: ${{ matrix.flavor }}
-          BASE_IMAGE: ${{ env.BASE_IMAGE}}
-        run: sudo podman build "--build-arg=BUILD_FLAVOR=${BUILD_FLAVOR}" "--build-arg=BASE_IMAGE=${BASE_IMAGE}" -t "${IMAGE_NAME}:${DEFAULT_TAG}" -f ./Containerfile .
+          BASE_IMAGE: ${{ env.BASE_IMAGE }}
+        run: sudo podman build "--build-arg=BASE_IMAGE=${BASE_IMAGE}" -t "${IMAGE_NAME}:${DEFAULT_TAG}" -f ./Containerfile .
 
       - name: Rechunk Image
         run: sudo podman run --rm --privileged -v /var/lib/containers:/var/lib/containers --entrypoint /usr/libexec/bootc-base-imagectl "localhost/${IMAGE_NAME}:${DEFAULT_TAG}" rechunk --max-layers 67 "localhost/${IMAGE_NAME}:${DEFAULT_TAG}" "localhost/${IMAGE_NAME}:${DEFAULT_TAG}"

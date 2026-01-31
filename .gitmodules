@@ -1,6 +1,0 @@
-[submodule "assets"]
-	path = assets
-	url = https://github.com/zirconium-dev/assets.git
-[submodule "zdots"]
-	path = zdots
-	url = https://github.com/zirconium-dev/zdots.git
