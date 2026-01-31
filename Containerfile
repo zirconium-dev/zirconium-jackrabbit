@@ -5,7 +5,7 @@ FROM scratch AS ctx
 
 COPY build_files /build
 COPY system_files /files
-COPY cosign.pub /files/etc/pki/containers/zirconium-jackrabbit.pub
+COPY cosign.pub /files/usr/share/pki/containers/jackrabbit.pub
 
 FROM "${BASE_IMAGE}"
 ARG BUILD_FLAVOR="${BUILD_FLAVOR:-}"
