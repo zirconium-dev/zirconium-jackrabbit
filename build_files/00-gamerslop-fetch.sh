@@ -30,7 +30,6 @@ dnf -y copr enable ublue-os/bazzite
 dnf -y copr disable ublue-os/bazzite
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:ublue-os:bazzite install \
   steamos-manager \
-  steam-notif-daemon \
   ryzenadj
   
 
