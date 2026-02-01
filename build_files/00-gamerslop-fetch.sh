@@ -56,7 +56,8 @@ dnf swap --repo=terra-mesa -y mesa-filesystem mesa-filesystem
 dnf -y --enablerepo=terra install \
   gamescope-session-plus \
   gamescope-session-steam \
-  ScopeBuddy
+  ScopeBuddy \
+  powerbuttond
 
 # im not packaging this lilbro :holding_back_tears:
 OGUI_SESSION_TMPDIR="$(mktemp -d)"
