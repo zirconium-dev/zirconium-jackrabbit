@@ -14,6 +14,12 @@ dnf -y copr disable lukenukem/asus-linux
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:lukenukem:asus-linux install \
   asusctl
 
+FEDORA_VERSION="$(rpm -E "%{fedora}")"
+dnf -y copr enable "gloriouseggroll/nobara-${FEDORA_VERSION}"
+dnf -y copr disable "gloriouseggroll/nobara-${FEDORA_VERSION}"
+dnf -y --enablerepo "copr:copr.fedorainfracloud.org:gloriouseggroll:nobara-${FEDORA_VERSION}" install \
+  gamescope
+
 dnf -y copr enable bieszczaders/kernel-cachyos-addons
 dnf -y copr disable bieszczaders/kernel-cachyos-addons
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons swap zram-generator-defaults cachyos-settings
@@ -44,12 +50,6 @@ yes | dnf -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.c
 dnf config-manager setopt terra.enabled=0
 dnf config-manager setopt terra-extras.enabled=0
 dnf config-manager setopt terra-mesa.enabled=0
-
-mkdir -p /usr/share/sdl/
-curl "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/master/gamecontrollerdb.txt" -Lo /usr/share/sdl/gamecontrollerdb.txt
-
-mkdir -p /usr/share/gamescope-session-plus/
-curl --retry 3 -Lo /usr/share/gamescope-session-plus/bootstrap_steam.tar.gz https://large-package-sources.nobaraproject.org/bootstrap_steam.tar.gz
 dnf swap --repo=terra-mesa -y mesa-filesystem mesa-filesystem
 dnf -y --enablerepo=terra install \
   gamescope-session-plus \
@@ -57,12 +57,11 @@ dnf -y --enablerepo=terra install \
   ScopeBuddy \
   powerbuttond
 
-# im not packaging this lilbro :holding_back_tears:
-OGUI_SESSION_TMPDIR="$(mktemp -d)"
-curl -fsSLo - "https://github.com/ShadowBlip/gamescope-session-opengamepadui/archive/refs/heads/main.tar.gz" | tar -xzvf - -C "${OGUI_SESSION_TMPDIR}" # 67
-cp -avf "${OGUI_SESSION_TMPDIR}"/*/. /
-stat /usr/share/wayland-sessions/gamescope-session-opengamepadui.desktop
-rm -rf "${OGUI_SESSION_TMPDIR}"
+mkdir -p /usr/share/gamescope-session-plus/
+curl --retry 3 -Lo /usr/share/gamescope-session-plus/bootstrap_steam.tar.gz https://large-package-sources.nobaraproject.org/bootstrap_steam.tar.gz
+
+mkdir -p /usr/share/sdl/
+curl "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/master/gamecontrollerdb.txt" -Lo /usr/share/sdl/gamecontrollerdb.txt
 
 dnf -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedora-steam.repo
 dnf config-manager setopt fedora-steam.enabled=0
@@ -73,3 +72,17 @@ dnf install -y mangohud vulkan-tools waydroid
 
 # We don't need this after the fetch script
 dnf config-manager setopt keepcache=0
+
+# im not packaging this lilbro :holding_back_tears:
+OGUI_SESSION_TMPDIR="$(mktemp -d)"
+curl -fsSLo - "https://github.com/ShadowBlip/gamescope-session-opengamepadui/archive/refs/heads/main.tar.gz" | tar -xzvf - -C "${OGUI_SESSION_TMPDIR}" # 67
+cp -avf "${OGUI_SESSION_TMPDIR}"/*/usr/. /usr
+stat /usr/share/wayland-sessions/gamescope-session-opengamepadui.desktop
+rm -rf "${OGUI_SESSION_TMPDIR}"
+
+OGUI_STEAM_SESSION_TMPDIR="$(mktemp -d)"
+curl -fsSLo - "https://github.com/OpenGamingCollective/gamescope-session-ogui-steam/archive/refs/heads/main.tar.gz" | tar -xzvf - -C "${OGUI_STEAM_SESSION_TMPDIR}"
+cp -avf "${OGUI_STEAM_SESSION_TMPDIR}"/*/usr/. /usr
+rm /usr/share/wayland-sessions/gamescope-session-steam.desktop # we dont want the standard session
+stat /usr/share/wayland-sessions/gamescope-session-steam-plus.desktop
+rm -rf "${OGUI_STEAM_SESSION_TMPDIR}"
