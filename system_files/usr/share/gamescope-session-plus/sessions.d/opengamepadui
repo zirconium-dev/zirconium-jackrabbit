@@ -1,4 +1,0 @@
-#!/bin/bash
-
-CURSOR_FILE="${HOME}/.local/share/Steam/tenfoot/resource/images/cursors/arrow_right.png"
-CLIENTCMD="opengamepadui"

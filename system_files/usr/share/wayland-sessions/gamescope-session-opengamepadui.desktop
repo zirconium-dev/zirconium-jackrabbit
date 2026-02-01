@@ -1,7 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=OpenGamepadUI
-Comment=OpenGamepadUI Session
-Exec=gamescope-session-plus opengamepadui
-Type=Application
-DesktopNames=gamescope

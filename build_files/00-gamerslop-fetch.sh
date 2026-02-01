@@ -9,6 +9,11 @@ dnf -y copr disable bieszczaders/kernel-cachyos
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos install \
   kernel-cachyos
 
+dnf -y copr enable lukenukem/asus-linux
+dnf -y copr disable lukenukem/asus-linux
+dnf -y --enablerepo copr:copr.fedorainfracloud.org:lukenukem:asus-linux install \
+  asusctl
+
 dnf -y copr enable bieszczaders/kernel-cachyos-addons
 dnf -y copr disable bieszczaders/kernel-cachyos-addons
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons swap zram-generator-defaults cachyos-settings
@@ -53,12 +58,19 @@ dnf -y --enablerepo=terra install \
   gamescope-session-steam \
   ScopeBuddy
 
+# im not packaging this lilbro :holding_back_tears:
+OGUI_SESSION_TMPDIR="$(mktemp -d)"
+curl -fsSLo - "https://github.com/ShadowBlip/gamescope-session-opengamepadui/archive/refs/heads/main.tar.gz" | tar -xzvf - -C "${OGUI_SESSION_TMPDIR}" # 67
+cp -avf "${OGUI_SESSION_TMPDIR}"/*/. /
+stat /usr/share/wayland-sessions/gamescope-session-opengamepadui.desktop
+rm -rf "${OGUI_SESSION_TMPDIR}"
+
 dnf -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedora-steam.repo
 dnf config-manager setopt fedora-steam.enabled=0
 
 dnf install -y --enablerepo=fedora-steam --enablerepo=terra-mesa -x gamemode steam
 
-dnf install -y mangohud vulkan-tools
+dnf install -y mangohud vulkan-tools waydroid
 
 # We don't need this after the fetch script
 dnf config-manager setopt keepcache=0
