@@ -55,6 +55,7 @@ dnf -y --enablerepo=terra install \
   gamescope-session-plus \
   gamescope-session-steam \
   ScopeBuddy \
+  steam-notif-daemon \
   powerbuttond
 
 mkdir -p /usr/share/gamescope-session-plus/
@@ -66,7 +67,9 @@ curl "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/m
 dnf -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedora-steam.repo
 dnf config-manager setopt fedora-steam.enabled=0
 
-dnf install -y --enablerepo=fedora-steam --enablerepo=terra-mesa -x gamemode steam
+dnf install -y --enablerepo=fedora-steam --enablerepo=terra-mesa \
+  -x gamemode \
+  steam
 
 dnf install -y mangohud vulkan-tools waydroid
 
