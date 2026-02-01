@@ -1,6 +1,12 @@
 image := env("IMAGE_FULL", "zirconium-jackrabbit:latest")
 filesystem := env("BUILD_FILESYSTEM", "ext4")
 
+build:
+    podman build -t zirconium-jackrabbit:latest --build-arg BASE_IMAGE=ghcr.io/zirconium-dev/zirconium:latest .
+
+build-nvidia:
+    podman build -t gamerslop:latest --build-arg BUILD_FLAVOR=nvidia --build-arg BASE_IMAGE=ghcr.io/zirconium-dev/zirconium-nvidia:latest .
+
 iso $image=image:
     #!/usr/bin/env bash
     mkdir -p output

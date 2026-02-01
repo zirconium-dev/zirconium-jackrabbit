@@ -2,8 +2,6 @@
 
 set -xeuo pipefail
 
-dnf config-manager setopt keepcache=1
-
 for pkg in kernel kernel-core kernel-modules kernel-modules-core kernel-modules-extra; do
   rpm --erase $pkg --nodeps
 done
