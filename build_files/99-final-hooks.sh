@@ -4,7 +4,7 @@ set -xeuo pipefail
 
 sed -i -f - /usr/lib/os-release <<EOF
 s|^NAME=.*|NAME=\"Zirconium Jackrabbit\"|
-s|^PRETTY_NAME=.*|PRETTY_NAME=\"Zirconium\"|
+s|^PRETTY_NAME=.*|PRETTY_NAME=\"Zirconium Jackrabbit\"|
 EOF
 
 KERNEL_VERSION="$(find "/usr/lib/modules" -maxdepth 1 -type d ! -path "/usr/lib/modules" -exec basename '{}' ';' | sort | tail -n 1)"
