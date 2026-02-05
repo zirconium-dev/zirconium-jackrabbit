@@ -17,9 +17,6 @@ dnf -y --enablerepo copr:copr.fedorainfracloud.org:lizardbyte:beta install \
 dnf -y copr enable bieszczaders/kernel-cachyos-addons
 dnf -y copr disable bieszczaders/kernel-cachyos-addons
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons swap zram-generator-defaults cachyos-settings
-dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons install \
-  scx-scheds-git \
-  scx-manager
 
 # THIS IS SO ANNOYING
 # It just fails for whatever damn reason, other stuff is going to lock it if it actually fails
@@ -43,10 +40,12 @@ dnf -y --enablerepo=terra install \
   powerbuttond \
   powerstation \
   ScopeBuddy \
+  scx-scheds \
+  scx-tools \
   steam-notif-daemon \
-  umu-launcher \
   steamos-manager \
-  steamos-manager-gamescope-session-plus
+  steamos-manager-gamescope-session-plus \
+  umu-launcher
 
 dnf -y --enablerepo=terra --enablerepo=terra-mesa install \
   -x falcond \
