@@ -9,16 +9,10 @@ dnf -y copr disable bieszczaders/kernel-cachyos
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos install \
   kernel-cachyos
 
-dnf -y copr enable lukenukem/asus-linux
-dnf -y copr disable lukenukem/asus-linux
-dnf -y --enablerepo copr:copr.fedorainfracloud.org:lukenukem:asus-linux install \
-  asusctl
-
-FEDORA_VERSION="$(rpm -E "%{fedora}")"
-dnf -y copr enable "gloriouseggroll/nobara-${FEDORA_VERSION}"
-dnf -y copr disable "gloriouseggroll/nobara-${FEDORA_VERSION}"
-dnf -y --enablerepo "copr:copr.fedorainfracloud.org:gloriouseggroll:nobara-${FEDORA_VERSION}" install \
-  gamescope
+dnf copr enable -y lizardbyte/beta
+dnf copr disable -y lizardbyte/beta
+dnf -y --enablerepo copr:copr.fedorainfracloud.org:lizardbyte:beta install \
+  Sunshine
 
 dnf -y copr enable bieszczaders/kernel-cachyos-addons
 dnf -y copr disable bieszczaders/kernel-cachyos-addons
@@ -27,65 +21,46 @@ dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-a
   scx-scheds-git \
   scx-manager
 
-dnf -y copr enable shadowblip/InputPlumber
-dnf -y copr disable shadowblip/InputPlumber
-dnf -y --enablerepo copr:copr.fedorainfracloud.org:shadowblip:InputPlumber install \
-  inputplumber
-
-OGUI_TAG="$(curl --fail --retry 5 --retry-delay 5 --retry-all-errors -s "https://api.github.com/repos/ShadowBlip/OpenGamepadUI/releases/latest" | grep tag_name | cut -d : -f2 | tr -d 'v", ' | head -1)"
-PS_TAG="$(curl --fail --retry 5 --retry-delay 5 --retry-all-errors -s "https://api.github.com/repos/ShadowBlip/PowerStation/releases/latest" | grep tag_name | cut -d : -f2 | tr -d 'v", ' | head -1)"
-
-dnf install -y \
-  "https://github.com/ShadowBlip/OpenGamepadUI/releases/download/v$OGUI_TAG/opengamepadui-$OGUI_TAG-1.$(arch).rpm" \
-  "https://github.com/ShadowBlip/PowerStation/releases/download/v$PS_TAG/powerstation-$PS_TAG-1.$(arch).rpm"
-
-dnf copr enable -y lizardbyte/beta
-dnf copr disable -y lizardbyte/beta
-dnf -y --enablerepo copr:copr.fedorainfracloud.org:lizardbyte:beta install \
-  Sunshine
-
 # THIS IS SO ANNOYING
 # It just fails for whatever damn reason, other stuff is going to lock it if it actually fails
 yes | dnf -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras,-mesa} || :
 dnf config-manager setopt terra.enabled=0
 dnf config-manager setopt terra-extras.enabled=0
 dnf config-manager setopt terra-mesa.enabled=0
+
+dnf -y --enablerepo=terra --enablerepo=terra-extras install \
+  terra-gamescope
+
 dnf swap --repo=terra-mesa -y mesa-filesystem mesa-filesystem
 dnf -y --enablerepo=terra install \
+  asusctl \
+  gamescope-session-ogui-steam \
+  gamescope-session-opengamepadui \
   gamescope-session-plus \
   gamescope-session-steam \
+  inputplumber \
+  opengamepadui \
+  powerbuttond \
+  powerstation \
   ScopeBuddy \
   steam-notif-daemon \
-  powerbuttond
+  umu-launcher \
+  steamos-manager \
+  steamos-manager-gamescope-session-plus
 
-mkdir -p /usr/share/gamescope-session-plus/
-curl --retry 3 -Lo /usr/share/gamescope-session-plus/bootstrap_steam.tar.gz https://large-package-sources.nobaraproject.org/bootstrap_steam.tar.gz
+dnf -y --enablerepo=terra --enablerepo=terra-mesa install \
+  -x falcond \
+  steam
+
+rm /usr/share/wayland-sessions/gamescope-session-steam.desktop # we dont want the standard session
 
 mkdir -p /usr/share/sdl/
 curl "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/master/gamecontrollerdb.txt" -Lo /usr/share/sdl/gamecontrollerdb.txt
-
-dnf -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedora-steam.repo
-dnf config-manager setopt fedora-steam.enabled=0
-
-dnf install -y --enablerepo=fedora-steam --enablerepo=terra-mesa \
-  -x gamemode \
-  steam
 
 dnf install -y mangohud vulkan-tools waydroid
 
 # We don't need this after the fetch script
 dnf config-manager setopt keepcache=0
 
-# im not packaging this lilbro :holding_back_tears:
-OGUI_SESSION_TMPDIR="$(mktemp -d)"
-curl -fsSLo - "https://github.com/ShadowBlip/gamescope-session-opengamepadui/archive/refs/heads/main.tar.gz" | tar -xzvf - -C "${OGUI_SESSION_TMPDIR}" # 67
-cp -avf "${OGUI_SESSION_TMPDIR}"/*/usr/. /usr
-stat /usr/share/wayland-sessions/gamescope-session-opengamepadui.desktop
-rm -rf "${OGUI_SESSION_TMPDIR}"
-
-OGUI_STEAM_SESSION_TMPDIR="$(mktemp -d)"
-curl -fsSLo - "https://github.com/OpenGamingCollective/gamescope-session-ogui-steam/archive/refs/heads/main.tar.gz" | tar -xzvf - -C "${OGUI_STEAM_SESSION_TMPDIR}"
-cp -avf "${OGUI_STEAM_SESSION_TMPDIR}"/*/usr/. /usr
-rm /usr/share/wayland-sessions/gamescope-session-steam.desktop # we dont want the standard session
-stat /usr/share/wayland-sessions/gamescope-session-steam-plus.desktop
-rm -rf "${OGUI_STEAM_SESSION_TMPDIR}"
+dnf info mesa-filesystem | grep -F -e "Terra"
+rpm -qa | grep -v -E "^gamescope"
