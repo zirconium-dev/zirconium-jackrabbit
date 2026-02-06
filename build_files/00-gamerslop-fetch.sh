@@ -16,7 +16,7 @@ KERNEL_SRC="/usr/src/kernels/${KERNEL_VERSION}"
 # There's a million forks of this, but this is the one that terra and ublue seem to use?
 git clone --depth=1 https://github.com/dlundqvist/xone /tmp/xone
 # dependency for firmware script
-dnf install -y bsdtar
+dnf -y install bsdtar
 
 pushd /tmp/xone
 make -C "${KERNEL_SRC}" M="$PWD" modules
