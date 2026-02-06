@@ -7,7 +7,23 @@ dnf config-manager setopt keepcache=1
 dnf -y copr enable bieszczaders/kernel-cachyos
 dnf -y copr disable bieszczaders/kernel-cachyos
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos install \
-  kernel-cachyos
+  kernel-cachyos \
+  kernel-cachyos-devel-matched
+
+KERNEL_VERSION="$(ls /usr/lib/modules | sort -V | tail -n1)"
+KERNEL_SRC="/usr/src/kernels/${KERNEL_VERSION}"
+
+# There's a million forks of this, but this is the one that terra and ublue seem to use?
+git clone --depth=1 https://github.com/dlundqvist/xone /tmp/xone
+# dependency for firmware script
+dnf install -y bsdtar
+
+pushd /tmp/xone
+make -C "${KERNEL_SRC}" M="$PWD" modules
+make -C "${KERNEL_SRC}" M="$PWD" modules_install
+./install/firmware.sh --skip-disclaimer
+depmod -a "${KERNEL_VERSION}"
+popd
 
 dnf copr enable -y lizardbyte/beta
 dnf copr disable -y lizardbyte/beta
