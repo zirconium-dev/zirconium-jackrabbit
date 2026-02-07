@@ -3,6 +3,7 @@
 set -xeuo pipefail
 
 dnf config-manager setopt keepcache=1
+trap 'dnf config-manager setopt keepcache=0' EXIT
 
 dnf -y copr enable bieszczaders/kernel-cachyos
 dnf -y copr disable bieszczaders/kernel-cachyos
@@ -17,13 +18,6 @@ dnf -y --enablerepo copr:copr.fedorainfracloud.org:lizardbyte:beta install \
 dnf -y copr enable bieszczaders/kernel-cachyos-addons
 dnf -y copr disable bieszczaders/kernel-cachyos-addons
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons swap zram-generator-defaults cachyos-settings
-
-# THIS IS SO ANNOYING
-# It just fails for whatever damn reason, other stuff is going to lock it if it actually fails
-yes | dnf -y install --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release{,-extras,-mesa} || :
-dnf config-manager setopt terra.enabled=0
-dnf config-manager setopt terra-extras.enabled=0
-dnf config-manager setopt terra-mesa.enabled=0
 
 dnf -y --enablerepo=terra --enablerepo=terra-extras install \
   terra-gamescope
@@ -58,8 +52,5 @@ curl "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/m
 
 dnf install -y mangohud vulkan-tools waydroid
 
-# We don't need this after the fetch script
-dnf config-manager setopt keepcache=0
-
 dnf info mesa-filesystem | grep -F -e "Terra"
-rpm -qa | grep -v -E "^gamescope"
+rpm -qa | grep -v -E "^gamescope" &> /dev/null
