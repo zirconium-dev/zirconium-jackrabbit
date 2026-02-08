@@ -8,7 +8,8 @@ trap 'dnf config-manager setopt keepcache=0' EXIT
 dnf -y copr enable bieszczaders/kernel-cachyos
 dnf -y copr disable bieszczaders/kernel-cachyos
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos install \
-  kernel-cachyos
+  kernel-cachyos \
+  kernel-cachyos-devel
 
 dnf copr enable -y lizardbyte/beta
 dnf copr disable -y lizardbyte/beta
@@ -25,6 +26,7 @@ dnf -y --enablerepo=terra --enablerepo=terra-extras install \
 dnf swap --repo=terra-mesa -y mesa-filesystem mesa-filesystem
 dnf -y --enablerepo=terra install \
   asusctl \
+  dkms-xone \
   gamescope-session-ogui-steam \
   gamescope-session-opengamepadui \
   gamescope-session-plus \

@@ -13,3 +13,4 @@ chmod 1777 /var/tmp
 KERNEL_VERSION="$(find "/usr/lib/modules" -maxdepth 1 -type d ! -path "/usr/lib/modules" -exec basename '{}' ';' | sort | tail -n 1)"
 akmods --force --kernels "${KERNEL_VERSION}" --kmod "nvidia"
 cat /var/cache/akmods/nvidia/*.failed.log || true
+stat "/usr/lib/modules/${KERNEL_VERSION}"/extra/nvidia/nvidia*.ko* # Ensuring kmods exist
