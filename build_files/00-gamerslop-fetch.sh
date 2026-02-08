@@ -41,9 +41,16 @@ dnf -y --enablerepo=terra install \
   steamos-manager-gamescope-session-plus \
   umu-launcher
 
-dnf -y --enablerepo=terra --enablerepo=terra-mesa install \
-  -x falcond \
-  steam
+if [[ "${BUILD_FLAVOR}" =~ "nvidia" ]] ; then
+  dnf -y --enablerepo=terra --enablerepo=terra-nvidia --enablerepo=terra-mesa install \
+    -x falcond \
+    steam
+else
+  dnf -y --enablerepo=terra --enablerepo=terra-mesa install \
+    -x falcond \
+    steam
+fi
+
 
 rm /usr/share/wayland-sessions/gamescope-session-steam.desktop # we dont want the standard session
 
