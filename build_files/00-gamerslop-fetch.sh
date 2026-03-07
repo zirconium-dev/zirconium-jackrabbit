@@ -21,7 +21,7 @@ dnf -y copr disable bieszczaders/kernel-cachyos-addons
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons swap zram-generator-defaults cachyos-settings
 
 dnf -y --enablerepo=terra --enablerepo=terra-extras install \
-  terra-gamescope
+  gamescope
 
 dnf swap --repo=terra-mesa -y mesa-filesystem mesa-filesystem
 dnf -y --enablerepo=terra install \
