@@ -54,7 +54,7 @@ else
 fi
 
 
-rm /usr/share/wayland-sessions/gamescope-session-steam.desktop # we dont want the standard session
+rm /usr/share/wayland-sessions/gamescope-session-steam.desktop # we dont want the standard session!
 
 mkdir -p /usr/share/sdl/
 curl "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/master/gamecontrollerdb.txt" -Lo /usr/share/sdl/gamecontrollerdb.txt
