@@ -20,13 +20,26 @@ dnf -y copr enable bieszczaders/kernel-cachyos-addons
 dnf -y copr disable bieszczaders/kernel-cachyos-addons
 dnf -y --enablerepo copr:copr.fedorainfracloud.org:bieszczaders:kernel-cachyos-addons swap zram-generator-defaults cachyos-settings
 
+terra_subrepos=(terra-release-mesa)
+if [[ "${BUILD_FLAVOR}" =~ "nvidia" ]] ; then
+  terra_subrepos+=(terra-release-nvidia)
+fi
+
 dnf -y --enablerepo=terra --enablerepo=terra-extras install \
-  terra-gamescope
+  terra-gamescope \
+  "${terra_subrepos[@]}"
+
+# Exclude i686 mesa-vulkan-drivers from terra-mesa,
+# patches are only relevant for x86_64 gamescope anyway
+# i'm not 100% sure why this was failing but it seems like
+# some upstream issue with how the package is produced?
+dnf config-manager setopt terra-mesa.excludepkgs=mesa-vulkan-drivers.i686
 
 dnf swap --repo=terra-mesa -y mesa-filesystem mesa-filesystem
-dnf -y --enablerepo=terra install \
+dnf -y --enablerepo=terra --enablerepo=terra-mesa install \
   asusctl \
-  dkms-xone \
+  dkms-xonedo-nightly \
+  xonedo-nightly-firmware \
   gamescope-session-ogui-steam \
   gamescope-session-opengamepadui \
   gamescope-session-plus \
@@ -53,7 +66,6 @@ else
     steam
 fi
 
-
 rm /usr/share/wayland-sessions/gamescope-session-steam.desktop # we dont want the standard session
 
 mkdir -p /usr/share/sdl/
@@ -62,4 +74,4 @@ curl "https://raw.githubusercontent.com/mdqinc/SDL_GameControllerDB/refs/heads/m
 dnf install -y mangohud vulkan-tools waydroid
 
 dnf info mesa-filesystem | grep -F -e "Terra"
-rpm -qa | grep -v -E "^gamescope" &> /dev/null
+rpm -qa | grep -v -E "^gamescope" &>/dev/null
