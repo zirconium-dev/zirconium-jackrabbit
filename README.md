@@ -4,3 +4,6 @@
 This is a derivative Zirconium image, designed specifically for handheld users. It makes use of OpenGamepadUI, input-plumber and the CachyOS Kernel *(An alternative kernel will probably be used in the future.)*
 
 There will be rebase instructions in the future. If you're a curious advanced user, you should know how to use it already.
+
+Merged into main Zirconium repository
+<https://github.com/zirconium-dev/zirconium>
